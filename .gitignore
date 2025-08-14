@@ -1,0 +1,14 @@
+# Node.js dependencies
+/node_modules/
+/playwright-report/
+/test-results/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# dotenv environment variables file
+.env
+.env.local
+.env.*.local
