@@ -22,7 +22,8 @@ export default defineConfig({
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : 2,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: "html",
+  // reporter: "html",
+  reporter: [["html", { open: "never" }], ["line"], ["allure-playwright"]],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
@@ -35,6 +36,8 @@ export default defineConfig({
 
     // Where to save screenshots (relative to test run folder)
     screenshotPath: "screenshots/",
+    actionTimeout: 30000,
+    navigationTimeout: 30000,
   },
 
   /* Configure projects for major browsers */
@@ -44,16 +47,18 @@ export default defineConfig({
       testDir: "./tests/ui",
       use: {
         ...devices["Desktop Chrome"],
-        baseURL: process.env.BASEURL,
+        // baseURL: process.env.BASEURL,
+        slowMo: process.env.SLOWMO ? parseInt(process.env.SLOWMO) : 0,
+        headless: false,
       },
     },
-    {
-      name: "ui-firefox",
-      testDir: "./tests/ui",
-      use: {
-        ...devices["Desktop Firefox"],
-        baseURL: process.env.BASEURL,
-      },
-    }
+    // {
+    //   name: "ui-firefox",
+    //   testDir: "./tests/ui",
+    //   use: {
+    //     ...devices["Desktop Firefox"],
+    //     baseURL: process.env.BASEURL,
+    //   },
+    // }
   ],
 });

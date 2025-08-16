@@ -11,6 +11,7 @@ export const test = base.extend({
         path: "/",
         httpOnly: false,
         secure: true,
+        sameSite: "None",
       },
     ]);
     await use(page);
