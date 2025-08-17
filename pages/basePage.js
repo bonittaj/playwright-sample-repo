@@ -9,6 +9,10 @@ export class BasePage {
     await this.page.goto(url);
   }
 
+  async getUrl() {
+    return await this.page.url();
+  }
+
   async waitAndClick(selector, timeout = 5000) {
     const button = this.page.locator(selector);
     await button.waitFor({ state: "visible", timeout });
@@ -51,5 +55,15 @@ export class BasePage {
     const locator = this.page.locator(selector(altText));
     await locator.waitFor({ state: "visible" });
     await locator.click();
+  }
+
+  async getElementTextValue(selector) {
+    const locator = this.page.locator(selector);
+    await locator.waitFor({ state: "visible" });
+    return locator.innerText();
+  }
+
+  async getLocatorByText(selector, text) {
+    return this.page.locator(selector(text));
   }
 }

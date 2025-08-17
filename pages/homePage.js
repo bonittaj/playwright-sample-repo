@@ -5,6 +5,11 @@ import {
   cableBeginningButton,
   cableEndButton,
   imageByAlt,
+  brandProductCount,
+  productListItems,
+  paginationNextButton,
+  productTitle,
+  productPrice,
 } from "../pageObjects/homePage";
 
 export class HomePage extends BasePage {
@@ -43,5 +48,50 @@ export class HomePage extends BasePage {
 
   async selectManufacture() {
     this.clickImageByAlt(imageByAlt, constantData.ssnakeBrand);
+    await this.page.waitForTimeout(5000); // need to change this line
+  }
+
+  async getDisplayedBrandCount() {
+    // await this.page.pause()
+    const selector = await this.getLocatorByText(
+      brandProductCount,
+      constantData.ssnakeBrand,
+    );
+    return await selector.innerText();
+    // await this.page.pause()
+  }
+
+  async getProductListCount() {
+    let totalProducts = 0;
+
+    while (true) {
+      const locator = this.page.locator(productListItems);
+      const productListItemCount = await locator.count();
+      totalProducts += productListItemCount;
+
+      const nextButton = this.page.locator(paginationNextButton);
+
+      if (!(await nextButton.isVisible())) {
+        break;
+      }
+      await nextButton.scrollIntoViewIfNeeded();
+      await nextButton.click();
+
+      await this.page.waitForTimeout(1000); // optional: small wait to stabilize UI
+      await this.page.waitForSelector(productListItems);
+    }
+    return totalProducts;
+  }
+
+  async getFirstProductData() {
+    const firstProduct = this.page.locator(productListItems).first();
+    await firstProduct.scrollIntoViewIfNeeded();
+    const title = this.page.locator(productTitle).first();
+    const price = this.page.locator(productPrice).first();
+    return {
+      element: firstProduct,
+      title: await title.innerText(),
+      price: await price.innerText(),
+    };
   }
 }
