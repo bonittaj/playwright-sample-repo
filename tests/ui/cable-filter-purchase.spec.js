@@ -7,12 +7,17 @@ dotenv.config();
 
 test.describe("Verification of Cable Product Purchase Workflow", () => {
   test("User can select, filter and Purchase the Cable", async ({ page }) => {
-    await page.goto(`${process.env.BASEURL}`, {
-      waitUntil: "domcontentloaded",
-    });
     const homePage = new HomePage(page);
     const productPage = new ProductPage(page);
     const cartPage = new CartPage(page);
+    let cableProductDetails;
+
+    await test.step("Open the url", async () => {
+      await page.goto(`${process.env.BASEURL}`, {
+        waitUntil: "domcontentloaded",
+      });
+    });
+
     await test.step("Dismiss Cookie Popup", async () => {
       await homePage.dismissCookiePopUp();
     });
@@ -38,20 +43,30 @@ test.describe("Verification of Cable Product Purchase Workflow", () => {
     });
 
     await test.step("Open the Product details and Validate the Product Details", async () => {
-      const product = await homePage.getFirstProductData();
-      await product.element.click();
-      const productDetails = await productPage.getProductDetails();
-      expect(product.title).toBe(productDetails.title);
+      cableProductDetails = await homePage.getFirstProductData();
+      await cableProductDetails.element.click();
+
+      const productCard = await productPage.getProductDetails();
+      expect(cableProductDetails.title).toBe(productCard.title);
+
       const isSelectedProductUrlValid =
-        await productPage.validateUrlOfTheSelectedProduct(product.title);
+        await productPage.validateUrlOfTheSelectedProduct(
+          cableProductDetails.hrefValue,
+        );
       expect(isSelectedProductUrlValid).toBe(true);
     });
 
-    await test.step("Add the Product to the Cart and Validate the Product Details", async () => {
+    await test.step("Add the Product to the Cart", async () => {
       await productPage.clickAddToCart();
+    });
+
+    await test.step("Validation of Basket Notificaiton PopUp", async () => {
       const cartCount = await cartPage.getCartCount();
       expect(parseInt(cartCount)).toBe(1);
-      // const basketNotificationText = this.getBasketNotificationText()
+      const basketNotificationText = await cartPage.getBasketNotificationText();
+      expect(basketNotificationText).toBe(
+        `Item ${cableProductDetails.title} is now in the shopping basket.`,
+      );
     });
   });
 });

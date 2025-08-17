@@ -1,5 +1,6 @@
 import { BasePage } from "./basePage";
-import { cartQuantity, basketNotification } from "../pageObjects/cartPage";
+import { cartQuantity, basketNotification } from "./selectors/cartPage";
+
 export class CartPage extends BasePage {
   constructor(page) {
     super(page);
@@ -9,5 +10,7 @@ export class CartPage extends BasePage {
     return await this.getElementTextValue(cartQuantity);
   }
 
-  // Item Kirlin Y-303-06 BK is now in the shopping basket.
+  async getBasketNotificationText() {
+    return await this.getElementTextValue(basketNotification);
+  }
 }

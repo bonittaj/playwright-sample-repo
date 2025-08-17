@@ -1,9 +1,5 @@
 import { BasePage } from "./basePage";
-import {
-  productTitle,
-  productPrice,
-  addToCart,
-} from "../pageObjects/productPage";
+import { productTitle, productPrice, addToCart } from "./selectors/productPage";
 
 export class ProductPage extends BasePage {
   constructor(page) {
@@ -17,9 +13,9 @@ export class ProductPage extends BasePage {
     };
   }
 
-  async validateUrlOfTheSelectedProduct(title) {
+  async validateUrlOfTheSelectedProduct(hrefValue) {
     const url = await this.getUrl();
-    return url.includes(title.toLowerCase().replaceAll(" ", "_"));
+    return url.includes(hrefValue);
   }
 
   async clickAddToCart() {

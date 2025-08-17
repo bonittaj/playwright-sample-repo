@@ -11,6 +11,7 @@ export default [
       globals: {
         process: "readonly",
         module: "readonly",
+        document: "readonly",
       },
     },
     plugins: {

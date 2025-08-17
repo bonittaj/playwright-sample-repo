@@ -1,5 +1,5 @@
 import { BasePage } from "./basePage";
-import { constantData } from "../data/constants";
+import { productData } from "../data/productData";
 import {
   cookieConsentButton,
   cableBeginningButton,
@@ -10,7 +10,9 @@ import {
   paginationNextButton,
   productTitle,
   productPrice,
-} from "../pageObjects/homePage";
+  cablelink,
+  brandedProductsCount,
+} from "./selectors/homePage";
 
 export class HomePage extends BasePage {
   constructor(page) {
@@ -21,24 +23,26 @@ export class HomePage extends BasePage {
     await this.waitAndClick(cableBeginningButton);
     await this.clickByText(
       ".cg-plugmodal__category__item",
-      constantData.multiCoreCategory,
+      productData.multiCoreCategory,
     );
     await this.clickByText(
       ".cg-plugItem__subheadline",
-      constantData.multiCoreCableBeginning,
+      productData.multiCoreCableBeginning,
     );
+    await this.waitBrandCountLoaded(brandedProductsCount);
   }
 
   async selectCableEndType() {
     await this.waitAndClick(cableEndButton);
     await this.clickByText(
       ".cg-plugmodal__category__item",
-      constantData.multiCoreCategory,
+      productData.multiCoreCategory,
     );
     await this.clickByText(
       ".cg-plugItem__subheadline",
-      constantData.multiCoreCableEnd,
+      productData.multiCoreCableEnd,
     );
+    await this.waitBrandCountLoaded(brandedProductsCount);
   }
 
   async dismissCookiePopUp() {
@@ -46,50 +50,61 @@ export class HomePage extends BasePage {
     await this.waitAndClick(cookieConsentButton);
   }
 
+  async waitBrandCountLoaded(selector) {
+    await this.page.waitForFunction(
+      (selector) => {
+        const el = document.querySelector(selector);
+        return el && el.textContent?.trim().length > 0;
+      },
+      selector,
+      { timeout: 5000 },
+    );
+  }
+
   async selectManufacture() {
-    this.clickImageByAlt(imageByAlt, constantData.ssnakeBrand);
-    await this.page.waitForTimeout(5000); // need to change this line
+    this.clickImageByAlt(imageByAlt, productData.ssnakeBrand);
+    await this.waitBrandCountLoaded(brandedProductsCount);
   }
 
   async getDisplayedBrandCount() {
-    // await this.page.pause()
     const selector = await this.getLocatorByText(
       brandProductCount,
-      constantData.ssnakeBrand,
+      productData.ssnakeBrand,
     );
     return await selector.innerText();
-    // await this.page.pause()
   }
 
   async getProductListCount() {
     let totalProducts = 0;
-
-    while (true) {
-      const locator = this.page.locator(productListItems);
-      const productListItemCount = await locator.count();
-      totalProducts += productListItemCount;
-
-      const nextButton = this.page.locator(paginationNextButton);
-
-      if (!(await nextButton.isVisible())) {
-        break;
-      }
+    const locator = this.page.locator(productListItems);
+    const nextButton = this.page.locator(paginationNextButton);
+    
+    while (await nextButton.isVisible()) {
+      totalProducts += await locator.count();
       await nextButton.scrollIntoViewIfNeeded();
       await nextButton.click();
-
-      await this.page.waitForTimeout(1000); // optional: small wait to stabilize UI
-      await this.page.waitForSelector(productListItems);
+      await this.page.waitForTimeout(1000);
+      await locator.first().waitFor({ state: "visible" });
     }
+
+    totalProducts += await locator.count();
     return totalProducts;
   }
 
   async getFirstProductData() {
-    const firstProduct = this.page.locator(productListItems).first();
+    const firstProduct = await this.page.locator(productListItems).first();
     await firstProduct.scrollIntoViewIfNeeded();
-    const title = this.page.locator(productTitle).first();
-    const price = this.page.locator(productPrice).first();
+
+    const title = await this.page.locator(productTitle).first();
+    const price = await this.page.locator(productPrice).first();
+    const hrefValue = await this.page
+      .locator(cablelink)
+      .first()
+      .getAttribute("href");
+
     return {
       element: firstProduct,
+      hrefValue: hrefValue,
       title: await title.innerText(),
       price: await price.innerText(),
     };
