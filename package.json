@@ -20,10 +20,9 @@
     "dotenv": "^16.5.0"
   },
   "scripts": {
-    "test:ui": "npx playwright test tests/ui",
-    "test:all": "npx playwright test",
     "lint": "eslint .",
     "format": "prettier --write .",
+    "test": "npx playwright test tests/ui",
     "test:allure": "npx playwright test tests/ui --reporter=line,allure-playwright && rm -rf allure-report && npx allure generate allure-results -o allure-report && npx allure open allure-report",
     "allure:generate": "npx allure generate allure-results --clean -o allure-report",
     "allure:open": "npx allure open allure-report",
