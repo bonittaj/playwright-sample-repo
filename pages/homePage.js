@@ -50,14 +50,12 @@ export class HomePage extends BasePage {
     await this.waitAndClick(cookieConsentButton);
   }
 
-  async waitBrandCountLoaded(selector) {
+  async waitBrandCountLoaded(selector, timeout=5000) {
+    const element = this.page.locator(selector);
     await this.page.waitForFunction(
-      (selector) => {
-        const el = document.querySelector(selector);
-        return el && el.textContent?.trim().length > 0;
-      },
-      selector,
-      { timeout: 5000 },
+      (el) => el && el.textContent?.trim().length > 0,
+      await element.elementHandle(),
+      { timeout }
     );
   }
 
@@ -83,7 +81,7 @@ export class HomePage extends BasePage {
       totalProducts += await locator.count();
       await nextButton.scrollIntoViewIfNeeded();
       await nextButton.click();
-      await this.page.waitForTimeout(1000);
+      await this.page.waitForTimeout(3000);
       await locator.first().waitFor({ state: "visible" });
     }
 
