@@ -39,7 +39,6 @@ export class BasePage {
       throw new Error(`No elements found for selector: ${selector}`);
     }
     const element = elements.nth(index);
-    // await element.waitFor({ state: "visible" });
     return element;
   }
 

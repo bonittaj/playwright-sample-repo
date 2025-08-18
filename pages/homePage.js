@@ -50,12 +50,12 @@ export class HomePage extends BasePage {
     await this.waitAndClick(cookieConsentButton);
   }
 
-  async waitBrandCountLoaded(selector, timeout=5000) {
+  async waitBrandCountLoaded(selector, timeout = 5000) {
     const element = this.page.locator(selector);
     await this.page.waitForFunction(
       (el) => el && el.textContent?.trim().length > 0,
       await element.elementHandle(),
-      { timeout }
+      { timeout },
     );
   }
 

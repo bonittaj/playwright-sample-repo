@@ -6,7 +6,7 @@ import { CartPage } from "../../pages/cartPage.js";
 import { errorMessages } from "../../data/errorMessages.js";
 dotenv.config();
 
-test.describe("Verification of Cable Product Purchase Workflow", () => {
+test.describe("Verification of cable product purchase workflow", () => {
   test("User can select, filter and Purchase the Cable", async ({ page }) => {
     const homePage = new HomePage(page);
     const productPage = new ProductPage(page);
@@ -19,23 +19,23 @@ test.describe("Verification of Cable Product Purchase Workflow", () => {
       });
     });
 
-    await test.step("Dismiss Cookie Popup", async () => {
+    await test.step("Dismiss Cookie popup", async () => {
       await homePage.dismissCookiePopUp();
     });
 
-    await test.step("Select Cable Beginning Type", async () => {
+    await test.step("Select cable beginning type", async () => {
       await homePage.selectCableBeginningType();
     });
 
-    await test.step("Select Cable End Type", async () => {
+    await test.step("Select cable end type", async () => {
       await homePage.selectCableEndType();
     });
 
-    await test.step("Select a Manufacturer", async () => {
+    await test.step("Select a manufacturer", async () => {
       await homePage.selectManufacture();
     });
 
-    await test.step("Validate the Product Count after Selecting the Manufaturer", async () => {
+    await test.step("Validate the product count after selecting the manufaturer", async () => {
       const brandCount = await homePage.getDisplayedBrandCount();
       const filterProductCount = await homePage.getProductListCount();
       await expect(parseInt(brandCount), errorMessages.valueMismatchMsg).toBe(
@@ -43,7 +43,7 @@ test.describe("Verification of Cable Product Purchase Workflow", () => {
       );
     });
 
-    await test.step("Open the Product details and Validate the Product Details", async () => {
+    await test.step("Open the product details and validate the product details", async () => {
       cableProductDetails = await homePage.getFirstProductData();
       await cableProductDetails.element.click();
 
@@ -62,7 +62,7 @@ test.describe("Verification of Cable Product Purchase Workflow", () => {
       await productPage.clickAddToCart();
     });
 
-    await test.step("Validation of cartpage and Basket Notificaiton PopUp", async () => {
+    await test.step("Validation of cartpage and basket notificaiton popUp", async () => {
       expect(page).toHaveURL(/basket\.html/);
       const basketNotificationText = await cartPage.getBasketNotificationText();
       expect(basketNotificationText).toBe(
