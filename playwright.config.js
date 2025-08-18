@@ -47,18 +47,17 @@ export default defineConfig({
       testDir: "./tests/ui",
       use: {
         ...devices["Desktop Chrome"],
-        // baseURL: process.env.BASEURL,
         slowMo: process.env.SLOWMO ? parseInt(process.env.SLOWMO) : 0,
         headless: false,
       },
     },
-    // {
-    //   name: "ui-firefox",
-    //   testDir: "./tests/ui",
-    //   use: {
-    //     ...devices["Desktop Firefox"],
-    //     baseURL: process.env.BASEURL,
-    //   },
-    // }
+    {
+      name: "ui-firefox",
+      testDir: "./tests/ui",
+      use: {
+        ...devices["Desktop Firefox"],
+        baseURL: process.env.BASEURL,
+      },
+    }
   ],
 });

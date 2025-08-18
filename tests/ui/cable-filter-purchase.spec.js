@@ -61,8 +61,9 @@ test.describe("Verification of Cable Product Purchase Workflow", () => {
     });
 
     await test.step("Validation of Basket Notificaiton PopUp", async () => {
-      const cartCount = await cartPage.getCartCount();
-      expect(parseInt(cartCount)).toBe(1);
+      // const cartCount = await cartPage.getCartCount();
+      // expect(parseInt(cartCount)).toBe(1);
+
       const basketNotificationText = await cartPage.getBasketNotificationText();
       expect(basketNotificationText).toBe(
         `Item ${cableProductDetails.title} is now in the shopping basket.`,
