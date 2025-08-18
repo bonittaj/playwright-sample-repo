@@ -3,6 +3,7 @@ import { HomePage } from "../../pages/homePage.js";
 import { ProductPage } from "../../pages/productPage.js";
 import dotenv from "dotenv";
 import { CartPage } from "../../pages/cartPage.js";
+import { errorMessages } from "../../data/errorMessages.js";
 dotenv.config();
 
 test.describe("Verification of Cable Product Purchase Workflow", () => {
@@ -37,7 +38,7 @@ test.describe("Verification of Cable Product Purchase Workflow", () => {
     await test.step("Validate the Product Count after Selecting the Manufaturer", async () => {
       const brandCount = await homePage.getDisplayedBrandCount();
       const filterProductCount = await homePage.getProductListCount();
-      await expect(parseInt(brandCount), "The value mismatch").toBe(
+      await expect(parseInt(brandCount), errorMessages.valueMismatchMsg).toBe(
         filterProductCount,
       );
     });
@@ -48,7 +49,7 @@ test.describe("Verification of Cable Product Purchase Workflow", () => {
 
       const productCard = await productPage.getProductDetails();
       expect(cableProductDetails.title).toBe(productCard.title);
-      // expect(cableProductDetails.price).toBe(productCard.price); //confirm whether this is expected or not 
+      // expect(cableProductDetails.price).toBe(productCard.price); // Price format issue
 
       const isSelectedProductUrlValid =
         await productPage.validateUrlOfTheSelectedProduct(
@@ -61,7 +62,8 @@ test.describe("Verification of Cable Product Purchase Workflow", () => {
       await productPage.clickAddToCart();
     });
 
-    await test.step("Validation of Basket Notificaiton PopUp", async () => {
+    await test.step("Validation of cartpage and Basket Notificaiton PopUp", async () => {
+      expect(page).toHaveURL(/basket\.html/);
       const basketNotificationText = await cartPage.getBasketNotificationText();
       expect(basketNotificationText).toBe(
         `Item ${cableProductDetails.title} is now in the shopping basket.`,

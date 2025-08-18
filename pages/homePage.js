@@ -74,7 +74,7 @@ export class HomePage extends BasePage {
     return await selector.innerText();
   }
 
-  async getProductListCount() { //check for the case where product coutn =0
+  async getProductListCount() {
     let totalProducts = 0;
     const locator = this.page.locator(productListItems);
     const nextButton = this.page.locator(paginationNextButton);

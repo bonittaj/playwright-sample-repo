@@ -47,19 +47,16 @@ export class BasePage {
     const selector = `${className}:has-text("${text}")`;
     const element = this.page.locator(selector);
     await element.scrollIntoViewIfNeeded();
-    // await element.waitFor({ state: "visible" });
     await element.click();
   }
 
   async clickImageByAlt(selector, altText) {
     const locator = this.page.locator(selector(altText));
-    // await locator.waitFor({ state: "visible" });
     await locator.click();
   }
 
   async getElementTextValue(selector) {
     const locator = this.page.locator(selector);
-    // await locator.waitFor({ state: "visible" });
     return locator.innerText();
   }
 
