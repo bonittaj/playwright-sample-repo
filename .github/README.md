@@ -72,7 +72,8 @@ npm install
 ### Environment Setup
 Update the .env file with your CLIENT_ID and CLIENT_SECRET
 ```bash
-npm run test:allure        # Run UI tests  
+npm run test:allure        # Run UI tests with allure report
+npm run test        # Run UI tests  with playwright report
 ```
 ### Execution through Github
 Execution step throuh Github

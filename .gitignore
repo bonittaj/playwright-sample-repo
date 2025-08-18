@@ -2,11 +2,13 @@
 /node_modules/
 /playwright-report/
 /test-results/
+/allure-results
 
 # Logs
 logs
 *.log
 npm-debug.log*
+history.jsonl
 
 # dotenv environment variables file
 .env
