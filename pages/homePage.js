@@ -52,11 +52,7 @@ export class HomePage extends BasePage {
   async selectManufacture() {
     this.clickImageByAlt(imageByAlt, productData.ssnakeBrand);
     await this.waitBrandCountLoaded(brandedProductsCount);
-    await this.page.waitForResponse(
-      (response) =>
-        response.url().includes("cableguy_ajax.html") &&
-        response.status() === 200,
-    );
+    await this.waitForApiData();
   }
 
   async getDisplayedBrandCount() {
