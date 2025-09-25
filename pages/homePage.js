@@ -12,6 +12,8 @@ import {
   productPrice,
   cablelink,
   brandedProductsCount,
+  categoryTypes,
+  categoryItems,
 } from "./selectors/homePage";
 
 export class HomePage extends BasePage {
@@ -21,27 +23,15 @@ export class HomePage extends BasePage {
 
   async selectCableBeginningType() {
     await this.waitAndClick(cableBeginningButton);
-    await this.clickByText(
-      ".cg-plugmodal__category__item",
-      productData.multiCoreCategory,
-    );
-    await this.clickByText(
-      ".cg-plugItem__subheadline",
-      productData.multiCoreCableBeginning,
-    );
+    await this.clickByText(categoryTypes, productData.multiCoreCategory);
+    await this.clickByText(categoryItems, productData.multiCoreCableBeginning);
     await this.waitBrandCountLoaded(brandedProductsCount);
   }
 
   async selectCableEndType() {
     await this.waitAndClick(cableEndButton);
-    await this.clickByText(
-      ".cg-plugmodal__category__item",
-      productData.multiCoreCategory,
-    );
-    await this.clickByText(
-      ".cg-plugItem__subheadline",
-      productData.multiCoreCableEnd,
-    );
+    await this.clickByText(categoryTypes, productData.multiCoreCategory);
+    await this.clickByText(categoryItems, productData.multiCoreCableEnd);
     await this.waitBrandCountLoaded(brandedProductsCount);
   }
 
@@ -62,6 +52,7 @@ export class HomePage extends BasePage {
   async selectManufacture() {
     this.clickImageByAlt(imageByAlt, productData.ssnakeBrand);
     await this.waitBrandCountLoaded(brandedProductsCount);
+    await this.waitForApiData();
   }
 
   async getDisplayedBrandCount() {
@@ -72,20 +63,36 @@ export class HomePage extends BasePage {
     return await selector.innerText();
   }
 
+  async waitForFirstProductToChangeOnPagination(selector, oldFirstProduct) {
+    await this.page.waitForFunction(
+      (selector, oldText) => {
+        const first = document.querySelector(selector);
+        return first && first.textContent.trim() !== oldText;
+      },
+      selector,
+      oldFirstProduct,
+      { timeout: 10000 },
+    );
+  }
+
   async getProductListCount() {
     let totalProducts = 0;
-    const locator = this.page.locator(productListItems);
+    const productItem = this.page.locator(productListItems);
     const nextButton = this.page.locator(paginationNextButton);
-
     while (await nextButton.isVisible()) {
-      totalProducts += await locator.count();
+      totalProducts += await productItem.count();
+      const oldFirstProduct = (await productItem.first().textContent())?.trim();
+
       await nextButton.scrollIntoViewIfNeeded();
       await nextButton.click();
-      await this.page.waitForTimeout(3000);
-      await locator.first().waitFor({ state: "visible" });
-    }
 
-    totalProducts += await locator.count();
+      await this.waitForApiData();
+      await this.waitForFirstProductToChangeOnPagination(
+        productListItems,
+        oldFirstProduct,
+      );
+    }
+    totalProducts += await productItem.count();
     return totalProducts;
   }
 

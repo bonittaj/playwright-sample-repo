@@ -1,5 +1,6 @@
 import { expect } from "@playwright/test";
 import { errorMessages } from "../data/errorMessages";
+import { AJAX_ENDPOINTS } from "../data/apiEndPoints";
 export class BasePage {
   constructor(page) {
     this.page = page;
@@ -42,9 +43,8 @@ export class BasePage {
     return element;
   }
 
-  async clickByText(className, text) {
-    const selector = `${className}:has-text("${text}")`;
-    const element = this.page.locator(selector);
+  async clickByText(selector, text) {
+    const element = this.page.locator(selector, { hasText: text });
     await element.scrollIntoViewIfNeeded();
     await element.click();
   }
@@ -60,6 +60,15 @@ export class BasePage {
   }
 
   async getLocatorByText(selector, text) {
-    return this.page.locator(selector(text));
+    const element = await this.page.locator(selector(text));
+    return element;
+  }
+
+  async waitForApiData() {
+    await this.page.waitForResponse(
+      (response) =>
+        response.url().includes(AJAX_ENDPOINTS.cableguy) &&
+        response.status() === 200,
+    );
   }
 }

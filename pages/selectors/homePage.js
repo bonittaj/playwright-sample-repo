@@ -11,6 +11,7 @@ export const brandedProductsCount = ".cg-count";
 export const imageByAlt = (altText) => `img[alt="${altText}"]`;
 export const brandProductCount = (brandText) =>
   `.item:has(img[alt="${brandText}"]) .cg-brands__item__count`;
-
+export const categoryTypes = `.cg-plugmodal__category__item`;
+export const categoryItems = `.cg-plugItem__subheadline`;
 export const loadingImage = (page) =>
   page.getByRole("img", { name: "loading" });
