@@ -1,6 +1,6 @@
-# Thomann E2E Test Task
+# E2E Test Task
 
-This repository contains the end-to-end (E2E) test automation for the CableGuy section of the Thomann website. The tests are implemented using Playwright.
+This repository contains the end-to-end (E2E) test automation for the CableGuy section. The tests are implemented using Playwright.
 
 ## Task Details
 
